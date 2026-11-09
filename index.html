@@ -1,1 +1,2171 @@
-初始化
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#FAF6EF">
+<title>好好吃饭 · 减脂轻食与家常菜谱</title>
+<style>
+  :root{
+    --bg:#FAF6EF;
+    --surface:#FFFDF8;
+    --ink:#2B2723;
+    --ink-soft:#6E675F;
+    --ink-faint:#9C948A;
+    --line:#EAE2D5;
+    --accent:#C0563C;
+    --accent-soft:#F7E5DE;
+    --green:#5E7D52;
+    --green-soft:#EAF0E4;
+    --gold:#B0863F;
+    --radius:20px;
+    --shadow:0 1px 2px rgba(43,39,35,.04), 0 12px 32px rgba(43,39,35,.07);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Segoe UI",sans-serif;
+    background-color:var(--bg);
+    background-image:
+      radial-gradient(900px 520px at 8% -12%, #F4E8D8 0%, transparent 62%),
+      radial-gradient(760px 420px at 100% -6%, #EFE7D6 0%, transparent 55%);
+    background-repeat:no-repeat;
+    color:var(--ink);
+    line-height:1.65;
+    min-height:100vh;
+  }
+  button,input{font:inherit;color:inherit}
+  button{cursor:pointer;border:none;background:none}
+  img{display:block;max-width:100%}
+
+  /* ---------- 头部 ---------- */
+  .hero{
+    max-width:1160px;
+    margin:0 auto;
+    padding:clamp(44px,8vw,84px) clamp(20px,5vw,40px) clamp(24px,4vw,40px);
+  }
+  .eyebrow{
+    font-size:11px;
+    letter-spacing:.32em;
+    font-weight:600;
+    color:var(--accent);
+    text-transform:uppercase;
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .eyebrow::after{
+    content:"";
+    width:56px;height:1px;background:var(--accent);opacity:.45;
+  }
+  .hero h1{
+    margin-top:14px;
+    font-size:clamp(36px,7.4vw,64px);
+    line-height:1.12;
+    letter-spacing:-.02em;
+    font-weight:800;
+  }
+  .hero h1 em{
+    font-style:normal;
+    color:var(--accent);
+    position:relative;
+  }
+  .hero h1 em::after{
+    content:"";
+    position:absolute;left:2px;right:2px;bottom:6px;height:8px;
+    background:var(--accent-soft);
+    z-index:-1;border-radius:4px;
+  }
+  .hero .sub{
+    margin-top:16px;
+    max-width:520px;
+    color:var(--ink-soft);
+    font-size:clamp(14px,1.6vw,16px);
+  }
+  .search{
+    margin-top:30px;
+    display:flex;align-items:center;gap:10px;
+    max-width:440px;
+    height:50px;
+    padding:0 18px;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:999px;
+    box-shadow:var(--shadow);
+    transition:border-color .2s, box-shadow .2s;
+  }
+  .search:focus-within{
+    border-color:#D3B7A8;
+    box-shadow:0 0 0 4px rgba(192,86,60,.09);
+  }
+  .search svg{flex:0 0 auto;color:var(--ink-faint)}
+  .search input{
+    flex:1;min-width:0;
+    border:none;outline:none;background:transparent;
+    font-size:15px;
+  }
+  .search input::placeholder{color:var(--ink-faint)}
+
+  /* ---------- 工具栏 ---------- */
+  main{
+    max-width:1160px;
+    margin:0 auto;
+    padding:0 clamp(20px,5vw,40px) 80px;
+  }
+  .toolbar{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:16px;flex-wrap:wrap;
+    padding:14px 0 26px;
+    border-top:1px solid var(--line);
+  }
+  .filters{display:flex;gap:10px;flex-wrap:wrap}
+  .chip{
+    height:42px;
+    padding:0 18px;
+    display:inline-flex;align-items:center;gap:8px;
+    border:1px solid var(--line);
+    border-radius:999px;
+    background:rgba(255,253,248,.7);
+    font-size:14px;
+    color:var(--ink-soft);
+    transition:all .2s;
+    white-space:nowrap;
+  }
+  .chip span{
+    font-size:11px;
+    padding:1px 7px;
+    border-radius:999px;
+    background:rgba(43,39,35,.06);
+    color:var(--ink-faint);
+  }
+  .chip:hover{border-color:#D7C9B8;color:var(--ink)}
+  .chip.active{
+    background:var(--ink);
+    border-color:var(--ink);
+    color:#FCF8F1;
+  }
+  .chip.active span{background:rgba(255,255,255,.16);color:#F3E9DA}
+  .count{
+    font-size:13px;
+    color:var(--ink-faint);
+    letter-spacing:.04em;
+    padding-right:2px;
+  }
+
+  /* ---------- 卡片 ---------- */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(268px,1fr));
+    gap:clamp(16px,2.4vw,24px);
+  }
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    overflow:hidden;
+    cursor:pointer;
+    box-shadow:0 1px 2px rgba(43,39,35,.03);
+    transition:transform .28s cubic-bezier(.2,.7,.3,1), box-shadow .28s, border-color .28s;
+    outline:none;
+    display:flex;flex-direction:column;
+    animation:rise .5s both;
+  }
+  @keyframes rise{
+    from{opacity:0;transform:translateY(14px)}
+    to{opacity:1;transform:translateY(0)}
+  }
+  .card:hover,.card:focus-visible{
+    transform:translateY(-5px);
+    box-shadow:0 18px 40px rgba(60,45,30,.12);
+    border-color:#DED0BE;
+  }
+  .card:focus-visible{box-shadow:0 0 0 3px rgba(192,86,60,.25), 0 18px 40px rgba(60,45,30,.12)}
+  .media{
+    position:relative;
+    aspect-ratio:4/3;
+    overflow:hidden;
+    background:linear-gradient(140deg,#EFE3D1,#E4D6C2 45%,#DCCBB6);
+  }
+  .media::after{
+    content:"";
+    position:absolute;inset:0;
+    background:linear-gradient(to top, rgba(30,24,18,.22), transparent 45%);
+    pointer-events:none;
+  }
+  .media img{
+    width:100%;height:100%;
+    object-fit:cover;
+    opacity:0;
+    transition:opacity .5s ease, transform .6s cubic-bezier(.2,.7,.3,1);
+  }
+  .media img.loaded{opacity:1}
+  .card:hover .media img{transform:scale(1.045)}
+  .tag{
+    position:absolute;top:12px;left:12px;
+    z-index:2;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.06em;
+    padding:5px 11px;
+    border-radius:999px;
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+  }
+  .tag.light{background:rgba(234,240,228,.92);color:#47613C}
+  .tag.home{background:rgba(247,229,222,.94);color:#9C3F27}
+  .kcal{
+    position:absolute;top:12px;right:12px;
+    z-index:2;
+    font-size:11px;
+    font-weight:600;
+    padding:5px 10px;
+    border-radius:999px;
+    background:rgba(28,24,20,.55);
+    color:#FFF8EE;
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+  }
+  .card-body{
+    padding:16px 18px 18px;
+    display:flex;flex-direction:column;gap:8px;
+    flex:1;
+  }
+  .card-body h3{
+    font-size:17.5px;
+    font-weight:700;
+    letter-spacing:-.01em;
+  }
+  .card-desc{
+    font-size:13px;
+    color:var(--ink-soft);
+    line-height:1.55;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+    min-height:40px;
+  }
+  .card-foot{
+    margin-top:auto;
+    padding-top:10px;
+    display:flex;align-items:center;justify-content:space-between;
+    border-top:1px dashed var(--line);
+    font-size:12.5px;
+    color:var(--ink-faint);
+  }
+  .card-foot b{
+    font-weight:600;
+    color:var(--ink-soft);
+  }
+  .card-foot .more{
+    color:var(--accent);
+    font-weight:600;
+    display:inline-flex;align-items:center;gap:3px;
+  }
+  .card-foot .more i{font-style:normal;transition:transform .2s}
+  .card:hover .more i{transform:translateX(3px)}
+
+  .empty{
+    text-align:center;
+    padding:70px 20px;
+    color:var(--ink-faint);
+    font-size:14px;
+  }
+  .empty strong{display:block;font-size:17px;color:var(--ink-soft);margin-bottom:6px}
+
+  footer{
+    max-width:1160px;
+    margin:0 auto;
+    padding:0 clamp(20px,5vw,40px) 48px;
+    text-align:center;
+    font-size:12px;
+    color:var(--ink-faint);
+    letter-spacing:.05em;
+  }
+
+  /* ---------- 详情弹层 ---------- */
+  .modal{
+    position:fixed;inset:0;z-index:60;
+    display:flex;align-items:flex-end;justify-content:center;
+    background:rgba(32,27,22,.52);
+    backdrop-filter:blur(5px);
+    -webkit-backdrop-filter:blur(5px);
+    opacity:0;pointer-events:none;
+    transition:opacity .28s ease;
+  }
+  .modal.open{opacity:1;pointer-events:auto}
+  .panel{
+    position:relative;
+    width:min(900px,100%);
+    max-height:92vh;
+    background:var(--surface);
+    border-radius:26px 26px 0 0;
+    overflow-y:auto;
+    overscroll-behavior:contain;
+    transform:translateY(36px);
+    transition:transform .32s cubic-bezier(.2,.75,.25,1);
+    box-shadow:0 -10px 60px rgba(20,16,12,.3);
+  }
+  .modal.open .panel{transform:translateY(0)}
+  .panel::-webkit-scrollbar{width:6px}
+  .panel::-webkit-scrollbar-thumb{background:#DDD2C2;border-radius:3px}
+
+  .panel-head{
+    position:relative;
+    height:clamp(210px,34vw,290px);
+    background:linear-gradient(140deg,#EFE3D1,#DCCBB6);
+  }
+  .panel-head img{
+    width:100%;height:100%;object-fit:cover;
+  }
+  .panel-head::after{
+    content:"";
+    position:absolute;inset:0;
+    background:linear-gradient(to top, rgba(24,19,15,.72) 0%, rgba(24,19,15,.18) 45%, rgba(24,19,15,.05) 100%);
+  }
+  .panel-title{
+    position:absolute;left:clamp(20px,4vw,34px);right:80px;bottom:20px;
+    z-index:2;color:#FFF9F0;
+  }
+  .panel-title .kicker{
+    font-size:11px;letter-spacing:.24em;text-transform:uppercase;
+    opacity:.8;font-weight:600;
+  }
+  .panel-title h2{
+    font-size:clamp(24px,4.4vw,34px);
+    line-height:1.2;
+    font-weight:800;
+    letter-spacing:-.01em;
+    margin-top:6px;
+    text-shadow:0 2px 18px rgba(0,0,0,.28);
+  }
+  .close{
+    position:absolute;top:14px;right:14px;z-index:3;
+    width:40px;height:40px;
+    border-radius:50%;
+    background:rgba(26,22,18,.5);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    color:#FFF6EA;
+    display:grid;place-items:center;
+    transition:background .2s, transform .2s;
+  }
+  .close:hover{background:rgba(26,22,18,.72);transform:rotate(90deg)}
+
+  .panel-body{padding:clamp(20px,4vw,32px)}
+  .meta{
+    display:flex;flex-wrap:wrap;gap:8px;
+    padding-bottom:20px;
+    border-bottom:1px solid var(--line);
+  }
+  .meta span{
+    font-size:12.5px;
+    padding:6px 13px;
+    border-radius:999px;
+    background:#F5EFE4;
+    color:var(--ink-soft);
+  }
+  .meta span b{color:var(--ink);font-weight:700}
+  .meta span.cal{background:var(--accent-soft);color:#9C3F27}
+  .meta span.cal b{color:#9C3F27}
+
+  .cols{
+    display:grid;
+    grid-template-columns:1.02fr 1.3fr;
+    gap:clamp(22px,4vw,40px);
+    padding-top:24px;
+  }
+  .sec h3{
+    font-size:15px;
+    font-weight:700;
+    letter-spacing:.02em;
+    display:flex;align-items:center;gap:9px;
+    margin-bottom:14px;
+  }
+  .sec h3::before{
+    content:"";
+    width:4px;height:15px;border-radius:2px;
+    background:var(--accent);
+  }
+  table.ing{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13.5px;
+  }
+  table.ing th{
+    text-align:left;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.1em;
+    color:var(--ink-faint);
+    padding:0 0 8px;
+    border-bottom:1px solid var(--line);
+  }
+  table.ing th:nth-child(2),table.ing th:nth-child(3){text-align:right}
+  table.ing td{
+    padding:9px 0;
+    border-bottom:1px dashed var(--line);
+    color:var(--ink-soft);
+  }
+  table.ing td:first-child{color:var(--ink);font-weight:500}
+  table.ing td:nth-child(2),table.ing td:nth-child(3){text-align:right;white-space:nowrap}
+  table.ing td:nth-child(2){color:var(--ink-soft)}
+  table.ing td:nth-child(3){
+    color:var(--accent);
+    font-weight:600;
+    font-variant-numeric:tabular-nums;
+  }
+  .ratio{
+    margin-top:14px;
+    padding:12px 14px;
+    border-radius:12px;
+    background:var(--green-soft);
+    font-size:12.5px;
+    line-height:1.9;
+    color:#4C6441;
+  }
+  .ratio b{
+    display:block;
+    font-size:10.5px;
+    letter-spacing:.14em;
+    color:#3F5636;
+    margin-bottom:2px;
+  }
+
+  ol.steps{
+    list-style:none;
+    counter-reset:s;
+  }
+  ol.steps li{
+    counter-increment:s;
+    position:relative;
+    padding:0 0 16px 40px;
+    font-size:14px;
+    color:var(--ink-soft);
+    line-height:1.7;
+  }
+  ol.steps li::before{
+    content:counter(s);
+    position:absolute;left:0;top:1px;
+    width:26px;height:26px;
+    border-radius:50%;
+    background:var(--accent-soft);
+    color:var(--accent);
+    font-size:12px;
+    font-weight:700;
+    display:grid;place-items:center;
+  }
+  ol.steps li:not(:last-child)::after{
+    content:"";
+    position:absolute;left:12.5px;top:30px;bottom:4px;
+    width:1px;
+    background:var(--line);
+  }
+
+  /* ---------- 锚点导航 ---------- */
+  .jump{display:flex;gap:10px;margin-top:22px}
+  .jump a{
+    height:44px;padding:0 20px;
+    display:inline-flex;align-items:center;
+    border:1px solid var(--line);border-radius:999px;
+    background:rgba(255,253,248,.75);
+    font-size:13.5px;color:var(--ink-soft);
+    text-decoration:none;
+    transition:border-color .2s,color .2s,background .2s;
+  }
+  .jump a:hover{border-color:#D7C9B8;color:var(--ink)}
+  .jump a:last-child{background:var(--ink);border-color:var(--ink);color:#FCF8F1}
+  .jump a:last-child:hover{background:#413A33}
+
+  /* ---------- 减脂计划 ---------- */
+  html{scroll-behavior:smooth}
+  section[id]{scroll-margin-top:24px}
+  .plan{
+    margin-top:72px;
+    padding-top:clamp(36px,5vw,56px);
+    border-top:1px solid var(--line);
+  }
+  .plan-head h2{
+    margin-top:12px;
+    font-size:clamp(28px,4.4vw,42px);
+    line-height:1.15;letter-spacing:-.02em;font-weight:800;
+  }
+  .plan-sub{margin-top:10px;max-width:640px;color:var(--ink-soft);font-size:14px}
+  .stats{
+    margin-top:26px;
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));
+    gap:12px;
+  }
+  .stat{
+    background:var(--surface);border:1px solid var(--line);border-radius:16px;
+    padding:16px 18px;
+  }
+  .stat span{display:block;font-size:11px;letter-spacing:.12em;color:var(--ink-faint);font-weight:600}
+  .stat strong{display:block;margin-top:6px;font-size:28px;line-height:1.2;letter-spacing:-.02em;font-weight:800}
+  .stat strong em{font-style:normal;font-size:12px;font-weight:600;color:var(--ink-soft);margin-left:4px;letter-spacing:0}
+  .stat small{display:block;margin-top:4px;font-size:11.5px;color:var(--ink-faint)}
+  .targets{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .targets span{
+    font-size:12.5px;padding:9px 14px;border-radius:999px;
+    background:var(--surface);border:1px solid var(--line);color:var(--ink-soft);
+  }
+  .targets b{color:var(--accent);font-weight:700}
+  .block-title{
+    margin:42px 0 16px;
+    font-size:17px;font-weight:700;
+    display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+  }
+  .block-title span{font-size:12px;font-weight:400;color:var(--ink-faint)}
+
+  .phases{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+  .phase{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px}
+  .phase-tag{font-size:10.5px;letter-spacing:.16em;color:var(--accent);font-weight:700}
+  .phase h4{margin-top:4px;font-size:16px}
+  .phase-goal{margin-top:2px;font-size:12.5px;font-weight:700;color:var(--green)}
+  .phase ul{list-style:none;margin-top:10px}
+  .phase li{
+    position:relative;padding:3px 0 3px 14px;font-size:12.5px;
+    color:var(--ink-soft);line-height:1.6;
+  }
+  .phase li::before{
+    content:"";position:absolute;left:0;top:11px;
+    width:4px;height:4px;border-radius:50%;background:#C9BBA7;
+  }
+
+  /* 横向周时间线 */
+  .week-strip-wrap{position:relative}
+  .week-strip{
+    display:flex;gap:12px;overflow-x:auto;padding:2px 2px 12px;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:thin;
+  }
+  .week-strip::-webkit-scrollbar{height:5px}
+  .week-strip::-webkit-scrollbar-thumb{background:#DDD2C2;border-radius:3px}
+  .htl-item{
+    position:relative;flex:0 0 152px;padding-top:28px;
+    scroll-snap-align:start;
+  }
+  .htl-item::before{
+    content:"";position:absolute;top:8px;left:16px;right:-12px;height:2px;
+    background:#E4D8C6;
+  }
+  .htl-item:last-child::before{display:none}
+  .htl-dot{
+    position:absolute;top:2px;left:10px;width:12px;height:12px;
+    border-radius:50%;background:var(--surface);
+    border:2px solid var(--accent);box-shadow:0 0 0 3px var(--bg);
+  }
+  .htl-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:14px;
+    padding:12px 13px;height:100%;
+    display:flex;flex-direction:column;gap:6px;
+    transition:border-color .2s,transform .2s;
+  }
+  .htl-card:hover{border-color:#DED0BE;transform:translateY(-2px)}
+  .htl-head{display:flex;align-items:baseline;justify-content:space-between;gap:6px}
+  .htl-head h4{font-size:13.5px}
+  .htl-head span{font-size:9px;letter-spacing:.12em;color:var(--accent);font-weight:700}
+  .htl-kcal{font-size:19px;font-weight:800;letter-spacing:-.02em;line-height:1.2}
+  .htl-kcal em{
+    font-style:normal;font-size:10px;font-weight:500;
+    color:var(--ink-faint);margin-left:3px;letter-spacing:0;
+  }
+  .htl-focus{font-size:12px;color:var(--ink-soft);line-height:1.5;min-height:36px}
+  .htl-meta{
+    margin-top:auto;padding-top:7px;border-top:1px dashed var(--line);
+    font-size:10.5px;color:var(--ink-faint);
+  }
+  .tl-hint{margin-top:4px;font-size:11px;color:var(--ink-faint);text-align:right}
+  @media (min-width:1100px){
+    .htl-item{flex:1 1 0;min-width:0}
+    .htl-focus{min-height:0}
+    .tl-hint{display:none}
+  }
+
+  /* 每日对比表 */
+  .table-wrap{
+    margin-top:16px;border:1px solid var(--line);border-radius:16px;
+    background:var(--surface);overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+  .table-wrap::-webkit-scrollbar{height:6px}
+  .table-wrap::-webkit-scrollbar-thumb{background:#DDD2C2;border-radius:3px}
+  table.compare{width:100%;min-width:1060px;border-collapse:collapse;font-size:12px}
+  table.compare th{
+    background:#F6EFE3;font-size:10.5px;font-weight:700;letter-spacing:.08em;
+    color:#7A7268;text-align:left;padding:9px 11px;
+    border-bottom:1px solid var(--line);white-space:nowrap;
+  }
+  table.compare thead tr:first-child th{border-bottom:1px dashed var(--line)}
+  table.compare th.group{text-align:center;color:var(--accent);letter-spacing:.16em}
+  table.compare th.num{text-align:right}
+  table.compare td{
+    padding:10px 11px;border-bottom:1px dashed var(--line);
+    vertical-align:top;color:var(--ink-soft);line-height:1.55;
+  }
+  table.compare tbody tr:last-child td{border-bottom:none}
+  table.compare tbody tr:hover td{background:#FCF7EF}
+  table.compare .day-cell{font-weight:700;color:var(--ink);white-space:nowrap}
+  table.compare .day-cell span{
+    display:block;font-size:9px;letter-spacing:.1em;
+    color:var(--ink-faint);font-weight:600;
+  }
+  table.compare .kcal-cell{text-align:right;font-weight:700;color:var(--accent);white-space:nowrap}
+  table.compare .meal-kcal{display:block;font-size:10px;color:var(--ink-faint);margin-top:2px}
+  table.compare .train-focus{display:block;font-weight:600;color:var(--ink);margin-bottom:2px}
+  table.compare .train-detail{font-size:11px;color:var(--ink-faint);line-height:1.65}
+  table.compare .dur-cell{white-space:nowrap}
+
+  .notes{
+    margin-top:42px;background:var(--surface);border:1px solid var(--line);
+    border-radius:18px;padding:clamp(18px,3vw,26px);
+  }
+  .notes h3{font-size:16px;margin-bottom:12px}
+  .notes ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:8px 28px}
+  .notes li{position:relative;padding-left:16px;font-size:12.5px;color:var(--ink-soft);line-height:1.7}
+  .notes li::before{
+    content:"";position:absolute;left:0;top:9px;
+    width:5px;height:5px;border-radius:50%;background:var(--accent);
+  }
+  .disclaimer{
+    margin-top:16px;padding-top:14px;border-top:1px dashed var(--line);
+    font-size:11.5px;line-height:1.75;color:var(--ink-faint);
+  }
+
+  @media (max-width:720px){
+    .toolbar{padding:16px 0 20px;gap:12px}
+    .chip{height:44px;padding:0 16px}
+    .count{display:none}
+    .cols{grid-template-columns:1fr}
+    .panel{max-height:94vh;border-radius:22px 22px 0 0}
+    .search{max-width:none}
+    .card-desc{min-height:0}
+    .notes ul{grid-template-columns:1fr}
+    .plan{margin-top:52px}
+    .htl-item{flex:0 0 144px}
+    .tl-hint{text-align:left}
+  }
+  @media (min-width:721px){
+    .modal{align-items:center;padding:28px}
+    .panel{border-radius:24px;max-height:88vh}
+    .close{width:38px;height:38px}
+  }
+  @media (max-width:380px){
+    .tag,.kcal{font-size:10px;padding:4px 8px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <p class="eyebrow">Recipe Book</p>
+  <h1>好好吃饭<em>。</em></h1>
+  <p class="sub">40 道菜，20 道减脂轻食，20 道家常烟火。用料配比、做法步骤与热量，一次看明白。</p>
+  <nav class="jump">
+    <a href="#recipes">菜谱</a>
+    <a href="#plan">减脂计划</a>
+  </nav>
+  <label class="search">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path>
+    </svg>
+    <input id="search" type="search" placeholder="搜索菜名、食材，例如：鸡胸肉" aria-label="搜索菜谱">
+  </label>
+</header>
+
+<main>
+  <section id="recipes">
+    <div class="toolbar">
+      <div class="filters" id="filters">
+        <button class="chip active" data-cat="all">全部 <span data-count="all">40</span></button>
+        <button class="chip" data-cat="减脂轻食">减脂轻食 <span data-count="减脂轻食">20</span></button>
+        <button class="chip" data-cat="家常菜">家常菜 <span data-count="家常菜">20</span></button>
+      </div>
+      <p class="count" id="count">共 40 道</p>
+    </div>
+
+    <section class="grid" id="grid" aria-label="菜谱列表"></section>
+    <div class="empty" id="empty" hidden>
+      <strong>没有找到这道菜</strong>
+      换个关键词试试，或者看看「全部」。
+    </div>
+  </section>
+
+  <section class="plan" id="plan">
+    <header class="plan-head">
+      <p class="eyebrow">Fat Loss Plan</p>
+      <h2>减脂计划</h2>
+      <p class="plan-sub">从 145 斤到 130 斤，按 12–14 周推进。不极端节食，用稳定的热量缺口加上力量训练，把体重降下来，也把肌肉留下来。</p>
+    </header>
+
+    <div class="stats">
+      <div class="stat">
+        <span>当前体重</span>
+        <strong>72.5<em>kg</em></strong>
+        <small>145 斤 · 晨起空腹</small>
+      </div>
+      <div class="stat">
+        <span>目标体重</span>
+        <strong>65<em>kg</em></strong>
+        <small>130 斤 · 需减 7.5 kg</small>
+      </div>
+      <div class="stat">
+        <span>BMI</span>
+        <strong>23.7<em>→ 21.2</em></strong>
+        <small>175 cm · 前后都在正常区间</small>
+      </div>
+      <div class="stat">
+        <span>建议周期</span>
+        <strong>12–14<em>周</em></strong>
+        <small>每周 0.5–0.6 kg</small>
+      </div>
+    </div>
+
+    <div class="targets">
+      <span><b>1700–1800</b> kcal / 天</span>
+      <span><b>120–130 g</b> 蛋白质</span>
+      <span><b>50–60 g</b> 脂肪</span>
+      <span><b>170–190 g</b> 碳水</span>
+      <span><b>2.5–3 L</b> 饮水</span>
+      <span><b>8000–10000</b> 步 / 天</span>
+      <span><b>7–8 h</b> 睡眠</span>
+    </div>
+
+    <h3 class="block-title">三阶段目标 <span>按趋势调整，不追求每周都掉秤</span></h3>
+    <div class="phases">
+      <article class="phase">
+        <p class="phase-tag">第 1–4 周</p>
+        <h4>适应期</h4>
+        <p class="phase-goal">72.5 → 70.5 kg</p>
+        <ul>
+          <li>每日热量 1800 kcal，先戒掉含糖饮料和夜宵</li>
+          <li>力量训练 3 次 / 周，有氧 2 次 / 周</li>
+          <li>每餐先吃蛋白质和蔬菜，再吃主食</li>
+        </ul>
+      </article>
+      <article class="phase">
+        <p class="phase-tag">第 5–10 周</p>
+        <h4>强化期</h4>
+        <p class="phase-goal">70.5 → 67 kg</p>
+        <ul>
+          <li>每日热量 1700 kcal，蛋白质不低于 120 g</li>
+          <li>力量训练 4 次 / 周，有氧 3 次 / 周</li>
+          <li>每周记录一次腰围，比体重更能反映变化</li>
+        </ul>
+      </article>
+      <article class="phase">
+        <p class="phase-tag">第 11–14 周</p>
+        <h4>巩固期</h4>
+        <p class="phase-goal">67 → 65 kg</p>
+        <ul>
+          <li>热量在 1700–1800 kcal 之间循环，避免代谢适应</li>
+          <li>力量训练 4 次 / 周，有氧减到 2 次 / 周</li>
+          <li>每 10 天安排 1 次自由餐，控制在单餐 800 kcal 内</li>
+        </ul>
+      </article>
+    </div>
+
+    <h3 class="block-title">一周饮食与训练 <span>横向看一周，下方表格逐日对比</span></h3>
+    <div class="week-strip-wrap">
+      <div class="week-strip">
+        <article class="htl-item">
+          <span class="htl-dot"></span>
+          <div class="htl-card">
+            <div class="htl-head"><h4>周一</h4><span>DAY 01</span></div>
+            <p class="htl-kcal">1700<em>kcal</em></p>
+            <p class="htl-focus">上肢推 + 有氧<br>60 min</p>
+            <p class="htl-meta">4 餐 · 高蛋白日</p>
+          </div>
+        </article>
+        <article class="htl-item">
+          <span class="htl-dot"></span>
+          <div class="htl-card">
+            <div class="htl-head"><h4>周二</h4><span>DAY 02</span></div>
+            <p class="htl-kcal">1700<em>kcal</em></p>
+            <p class="htl-focus">下肢前侧 + 核心<br>60 min</p>
+            <p class="htl-meta">4 餐 · 训练日</p>
+          </div>
+        </article>
+        <article class="htl-item">
+          <span class="htl-dot"></span>
+          <div class="htl-card">
+            <div class="htl-head"><h4>周三</h4><span>DAY 03</span></div>
+            <p class="htl-kcal">1700<em>kcal</em></p>
+            <p class="htl-focus">低强度有氧 + 拉伸<br>50 min</p>
+            <p class="htl-meta">4 餐 · 有氧日</p>
+          </div>
+        </article>
+        <article class="htl-item">
+          <span class="htl-dot"></span>
+          <div class="htl-card">
+            <div class="htl-head"><h4>周四</h4><span>DAY 04</span></div>
+            <p class="htl-kcal">1700<em>kcal</em></p>
+            <p class="htl-focus">上肢拉 + 二头<br>60 min</p>
+            <p class="htl-meta">4 餐 · 高蛋白日</p>
+          </div>
+        </article>
+        <article class="htl-item">
+          <span class="htl-dot"></span>
+          <div class="htl-card">
+            <div class="htl-head"><h4>周五</h4><span>DAY 05</span></div>
+            <p class="htl-kcal">1700<em>kcal</em></p>
+            <p class="htl-focus">下肢后链 + 核心<br>55 min</p>
+            <p class="htl-meta">4 餐 · 训练日</p>
+          </div>
+        </article>
+        <article class="htl-item">
+          <span class="htl-dot"></span>
+          <div class="htl-card">
+            <div class="htl-head"><h4>周六</h4><span>DAY 06</span></div>
+            <p class="htl-kcal">1800<em>kcal</em></p>
+            <p class="htl-focus">户外有氧<br>60 min</p>
+            <p class="htl-meta">4 餐 · 训练日</p>
+          </div>
+        </article>
+        <article class="htl-item">
+          <span class="htl-dot"></span>
+          <div class="htl-card">
+            <div class="htl-head"><h4>周日</h4><span>DAY 07</span></div>
+            <p class="htl-kcal">1730<em>kcal</em></p>
+            <p class="htl-focus">完全休息 + 恢复<br>散步 30–40 min</p>
+            <p class="htl-meta">4 餐 · 自由餐</p>
+          </div>
+        </article>
+      </div>
+      <p class="tl-hint">左右滑动查看完整一周 →</p>
+    </div>
+
+    <h3 class="block-title">每日饮食与训练对比 <span>四餐明细 + 动作组次 · 表格可左右滑动</span></h3>
+    <div class="table-wrap">
+      <table class="compare">
+        <thead>
+          <tr>
+            <th rowspan="2">日期</th>
+            <th class="group" colspan="4">饮食安排</th>
+            <th class="group" colspan="2">训练安排</th>
+            <th class="num" rowspan="2">热量</th>
+          </tr>
+          <tr>
+            <th>早餐</th>
+            <th>午餐</th>
+            <th>晚餐</th>
+            <th>加餐</th>
+            <th>内容</th>
+            <th>时长</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="day-cell">周一<span>DAY 01</span></td>
+            <td>燕麦鸡肉饼 2 块 + 无糖豆浆<span class="meal-kcal">450 kcal</span></td>
+            <td>香煎鸡胸配时蔬 + 糙米饭 150 g<span class="meal-kcal">620 kcal</span></td>
+            <td>番茄龙利鱼汤 + 半碗杂粮饭<span class="meal-kcal">450 kcal</span></td>
+            <td>希腊酸奶 100 g + 蓝莓 50 g<span class="meal-kcal">180 kcal</span></td>
+            <td>
+              <span class="train-focus">上肢推 + 有氧</span>
+              <span class="train-detail">哑铃卧推 4×8–10、上斜哑铃卧推 3×10、坐姿推举 3×10、侧平举 3×15、绳索下压 3×12、爬坡快走 20 min</span>
+            </td>
+            <td class="dur-cell">60 min</td>
+            <td class="kcal-cell">1700 kcal</td>
+          </tr>
+          <tr>
+            <td class="day-cell">周二<span>DAY 02</span></td>
+            <td>虾仁滑蛋 + 全麦吐司 1 片<span class="meal-kcal">420 kcal</span></td>
+            <td>香菇滑鸡糙米饭 + 凉拌黄瓜<span class="meal-kcal">600 kcal</span></td>
+            <td>豆腐虾仁煲 + 清炒时蔬<span class="meal-kcal">480 kcal</span></td>
+            <td>苹果 1 个 + 杏仁 10 粒<span class="meal-kcal">200 kcal</span></td>
+            <td>
+              <span class="train-focus">下肢前侧 + 核心</span>
+              <span class="train-detail">深蹲 4×8、腿举 3×12、保加利亚分腿蹲 3×10/侧、腿屈伸 3×15、平板支撑 3×40 s、卷腹 3×15</span>
+            </td>
+            <td class="dur-cell">60 min</td>
+            <td class="kcal-cell">1700 kcal</td>
+          </tr>
+          <tr>
+            <td class="day-cell">周三<span>DAY 03</span></td>
+            <td>金枪鱼玉米沙拉 + 水煮蛋 1 个<span class="meal-kcal">400 kcal</span></td>
+            <td>黑椒牛柳彩椒 + 糙米饭 150 g<span class="meal-kcal">620 kcal</span></td>
+            <td>番茄龙利鱼汤 + 蒸紫薯 200 g<span class="meal-kcal">460 kcal</span></td>
+            <td>无糖酸奶 + 小番茄<span class="meal-kcal">220 kcal</span></td>
+            <td>
+              <span class="train-focus">低强度有氧 + 拉伸</span>
+              <span class="train-detail">快走 / 骑行 / 椭圆机 40 min（能说话不能唱歌）、全身动态拉伸 10 min、步数补到 10000</span>
+            </td>
+            <td class="dur-cell">50 min</td>
+            <td class="kcal-cell">1700 kcal</td>
+          </tr>
+          <tr>
+            <td class="day-cell">周四<span>DAY 04</span></td>
+            <td>无糖燕麦粥 + 水煮蛋 2 个 + 小番茄<span class="meal-kcal">420 kcal</span></td>
+            <td>烤南瓜鸡腿沙拉<span class="meal-kcal">560 kcal</span></td>
+            <td>蒜蓉西兰花虾仁 + 半碗藜麦饭<span class="meal-kcal">480 kcal</span></td>
+            <td>蛋白粉 1 勺 + 半根香蕉<span class="meal-kcal">240 kcal</span></td>
+            <td>
+              <span class="train-focus">上肢拉 + 二头</span>
+              <span class="train-detail">高位下拉 4×10、坐姿划船 4×12、单臂哑铃划船 3×10/侧、面拉 3×15、哑铃弯举 3×12、椭圆机 15 min</span>
+            </td>
+            <td class="dur-cell">60 min</td>
+            <td class="kcal-cell">1700 kcal</td>
+          </tr>
+          <tr>
+            <td class="day-cell">周五<span>DAY 05</span></td>
+            <td>全麦三明治（鸡蛋 + 生菜 + 火腿）<span class="meal-kcal">450 kcal</span></td>
+            <td>凉拌鸡丝荞麦面<span class="meal-kcal">520 kcal</span></td>
+            <td>清蒸鲈鱼 + 蒜蓉西兰花 + 小半碗米饭<span class="meal-kcal">530 kcal</span></td>
+            <td>无糖酸奶 + 蓝莓<span class="meal-kcal">200 kcal</span></td>
+            <td>
+              <span class="train-focus">下肢后链 + 核心</span>
+              <span class="train-detail">罗马尼亚硬拉 4×8、杠铃臀推 3×12、腿弯举 3×12、站姿提踵 4×15、死虫式 3×12/侧、跳绳 10 min</span>
+            </td>
+            <td class="dur-cell">55 min</td>
+            <td class="kcal-cell">1700 kcal</td>
+          </tr>
+          <tr>
+            <td class="day-cell">周六<span>DAY 06</span></td>
+            <td>燕麦鸡肉饼 2 块 + 无糖豆浆<span class="meal-kcal">450 kcal</span></td>
+            <td>番茄炒蛋 + 糙米饭 + 清炒时蔬<span class="meal-kcal">650 kcal</span></td>
+            <td>空气炸鸡翅 3 只 + 大份蔬菜沙拉<span class="meal-kcal">550 kcal</span></td>
+            <td>水果 1 份<span class="meal-kcal">150 kcal</span></td>
+            <td>
+              <span class="train-focus">户外有氧</span>
+              <span class="train-detail">慢跑 / 游泳 / 骑行 / 爬山 45–60 min、心率 125–145、结束后拉伸 10 min</span>
+            </td>
+            <td class="dur-cell">60 min</td>
+            <td class="kcal-cell">1800 kcal</td>
+          </tr>
+          <tr>
+            <td class="day-cell">周日<span>DAY 07</span></td>
+            <td>虾仁滑蛋 + 全麦吐司<span class="meal-kcal">400 kcal</span></td>
+            <td>家常菜任选 1 道 + 半碗米饭 + 蔬菜<span class="meal-kcal">650 kcal</span></td>
+            <td>低卡蔬菜蛋花汤 + 豆腐虾仁煲<span class="meal-kcal">500 kcal</span></td>
+            <td>混合坚果 20 g<span class="meal-kcal">180 kcal</span></td>
+            <td>
+              <span class="train-focus">完全休息 + 恢复</span>
+              <span class="train-detail">散步或泡沫轴放松 30–40 min、睡眠 7–8 h、为下周训练恢复</span>
+            </td>
+            <td class="dur-cell">—</td>
+            <td class="kcal-cell">1730 kcal</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="tl-hint">表格较宽时，可在框内左右滑动查看完整列。</p>
+
+    <div class="notes">
+      <h3>执行要点</h3>
+      <ul>
+        <li>每周一晨起空腹称重，取 3 次平均值看趋势，不被单日数字影响。</li>
+        <li>连续 2 周体重不动：每日热量减 100 kcal，或每天多走 2000 步，二选一。</li>
+        <li>力量训练每周让重量 +2.5% 或多做 1–2 次，优先保住肌肉。</li>
+        <li>训练前热身 5–10 分钟，组间休息 60–90 秒；膝腰不适时把深蹲、硬拉换成腿举、臀桥。</li>
+        <li>外食优先蒸、煮、烤，主食减半，酱汁单独放。</li>
+        <li>平台期不要继续压低热量，先检查睡眠、步数和蛋白质是否达标。</li>
+      </ul>
+      <p class="disclaimer">以上按 30 岁男性估算：基础代谢约 1670 kcal，日常消耗约 2300–2500 kcal。数据为通用参考，不构成医疗建议；如有基础疾病、伤病或正在用药，请先咨询医生或注册营养师。</p>
+    </div>
+  </section>
+</main>
+
+<footer>一菜一谱 · 用量为 2 人份 · 热量为估算值</footer>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="panel" id="panel"></div>
+</div>
+
+<script>
+const IMG_API = "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=";
+
+const RECIPES = [
+  {
+    id: "chicken-veg",
+    name: "香煎鸡胸配时蔬",
+    cat: "减脂轻食",
+    kcal: 320,
+    time: "20 分钟",
+    level: "简单",
+    tags: ["高蛋白", "低碳水"],
+    desc: "鸡胸肉煎到外焦里嫩，配烤时蔬，饱腹又轻盈。",
+    prompt: "Overhead food photography of golden pan-seared sliced chicken breast with charred broccoli, cherry tomatoes and asparagus on a white ceramic plate, linen napkin, light oak wooden table, soft natural window light, minimal clean styling, appetizing, high detail, no text, no watermark",
+    ingredients: [
+      ["鸡胸肉", "200 g", 4],
+      ["西兰花", "150 g", 3],
+      ["小番茄", "80 g", 1],
+      ["芦笋", "80 g", 1],
+      ["橄榄油", "10 ml", 0.5],
+      ["黑胡椒 / 海盐", "适量", 0.5]
+    ],
+    ratio: "鸡胸肉 : 西兰花 : 配菜 : 油脂 = 4 : 3 : 2 : 0.5",
+    steps: [
+      "鸡胸肉横向片成两片，用海盐、黑胡椒和少许橄榄油抓匀，腌 10 分钟。",
+      "西兰花、芦笋放入沸水焯 60 秒，捞出过凉水，保持翠绿脆嫩。",
+      "平底锅中火，鸡胸肉每面煎 3 分钟至金黄，盛出静置 3 分钟再切片。",
+      "时蔬下锅快煎 1 分钟，撒海盐，与鸡胸肉一起装盘，挤上柠檬汁。"
+    ]
+  },
+  {
+    id: "quinoa-bowl",
+    name: "藜麦牛油果沙拉碗",
+    cat: "减脂轻食",
+    kcal: 380,
+    time: "15 分钟",
+    level: "简单",
+    tags: ["全谷物", "高纤维"],
+    desc: "一碗集齐优质碳水、蛋白与好脂肪，颜色也好看。",
+    prompt: "Top-down food photography of a quinoa avocado salad bowl with cherry tomatoes, corn, cucumber, chickpeas and a lemon wedge, rustic beige ceramic bowl, light marble surface, bright daylight, fresh healthy vibe, high detail, no text, no watermark",
+    ingredients: [
+      ["熟藜麦", "120 g", 3],
+      ["牛油果", "80 g", 2],
+      ["鹰嘴豆", "100 g", 2.5],
+      ["小番茄", "60 g", 1.5],
+      ["玉米粒", "50 g", 0.5],
+      ["橄榄油 + 柠檬汁", "15 ml", 0.5]
+    ],
+    ratio: "藜麦 : 牛油果 : 鹰嘴豆 : 配菜 : 酱汁 = 3 : 2 : 2.5 : 2 : 0.5",
+    steps: [
+      "藜麦淘洗两遍，冷水下锅煮 15 分钟至开花，沥干放凉。",
+      "鹰嘴豆沥干水分，用厨房纸吸干，平底锅少油煎到表面微脆。",
+      "牛油果切片，小番茄对半切，玉米粒焯熟备用。",
+      "所有食材按颜色分区摆入碗中，淋橄榄油柠檬汁，撒黑胡椒和少许海盐。"
+    ]
+  },
+  {
+    id: "tomato-fish",
+    name: "番茄龙利鱼汤",
+    cat: "减脂轻食",
+    kcal: 220,
+    time: "25 分钟",
+    level: "简单",
+    tags: ["低脂", "暖胃"],
+    desc: "番茄熬出红汤，鱼片嫩到入口即化，几乎没有刺。",
+    prompt: "Food photography of a steaming tomato sole fish soup in a white bowl, rich red broth, tender white fish fillet, tomato wedges, chopped scallion, wooden table, warm cozy light, visible steam, appetizing, high detail, no text, no watermark",
+    ingredients: [
+      ["龙利鱼柳", "250 g", 3.5],
+      ["番茄", "300 g", 4.5],
+      ["洋葱", "60 g", 1],
+      ["姜片", "5 g", 0.5],
+      ["橄榄油", "8 ml", 0.5]
+    ],
+    ratio: "番茄 : 鱼柳 : 洋葱 : 姜油 = 4.5 : 3.5 : 1 : 1",
+    steps: [
+      "龙利鱼切厚块，用盐、白胡椒和姜片腌 10 分钟。",
+      "番茄划十字用开水烫一下去皮，切小块；洋葱切丝。",
+      "锅中少油炒香洋葱，下番茄中火炒出沙，加 400 ml 热水煮开。",
+      "下鱼块转小火煮 4 分钟至变白，加盐调味，撒葱花出锅。"
+    ]
+  },
+  {
+    id: "garlic-shrimp",
+    name: "蒜蓉西兰花虾仁",
+    cat: "减脂轻食",
+    kcal: 240,
+    time: "15 分钟",
+    level: "简单",
+    tags: ["高蛋白", "快手"],
+    desc: "蒜香打底，虾仁弹牙，西兰花脆口，十分钟上桌。",
+    prompt: "Close-up food photography of garlic broccoli and shrimp stir-fry on a dark ceramic plate, glossy light sauce, golden minced garlic, vibrant green broccoli florets, pink shrimp, dark slate background, dramatic side light, high detail, no text, no watermark",
+    ingredients: [
+      ["西兰花", "250 g", 5],
+      ["虾仁", "150 g", 3],
+      ["蒜末", "15 g", 1],
+      ["橄榄油", "10 ml", 0.5],
+      ["盐 / 白胡椒", "适量", 0.5]
+    ],
+    ratio: "西兰花 : 虾仁 : 蒜末 : 油盐 = 5 : 3 : 1 : 1",
+    steps: [
+      "虾仁开背去虾线，用盐、白胡椒和少许料酒抓匀，腌 5 分钟。",
+      "西兰花切小朵，淡盐水浸泡 10 分钟后焯水 1 分钟，捞出沥干。",
+      "热锅少油，小火把蒜末煸出香味，转大火下虾仁炒至变色卷曲。",
+      "倒入西兰花翻炒 30 秒，加盐和两勺清水，收汁后立刻出锅。"
+    ]
+  },
+  {
+    id: "soba-chicken",
+    name: "凉拌鸡丝荞麦面",
+    cat: "减脂轻食",
+    kcal: 350,
+    time: "20 分钟",
+    level: "简单",
+    tags: ["低 GI", "夏日轻食"],
+    desc: "荞麦面配手撕鸡丝，芝麻酱一拌，清爽又顶饱。",
+    prompt: "Overhead food photography of cold soba noodles with shredded chicken, cucumber strips, carrot strips, sesame seeds and chili oil in a black bowl, chopsticks resting on the bowl, bright natural light, fresh summer vibe, high detail, no text, no watermark",
+    ingredients: [
+      ["荞麦面", "100 g", 3],
+      ["鸡胸肉", "120 g", 3],
+      ["黄瓜", "100 g", 2],
+      ["胡萝卜", "50 g", 1],
+      ["芝麻酱 + 生抽", "20 g", 1]
+    ],
+    ratio: "荞麦面 : 鸡丝 : 黄瓜 : 胡萝卜 : 酱汁 = 3 : 3 : 2 : 1 : 1",
+    steps: [
+      "鸡胸肉冷水下锅，加姜片煮 12 分钟，捞出晾凉后撕成细丝。",
+      "荞麦面煮 4 分钟，捞出过冰水，沥干装碗。",
+      "黄瓜、胡萝卜切细丝，铺在面上，再放上鸡丝。",
+      "芝麻酱用温水澥开，加生抽、香醋和蒜末调匀，淋在面上拌匀即可。"
+    ]
+  },
+  {
+    id: "tomato-egg",
+    name: "番茄炒蛋",
+    cat: "家常菜",
+    kcal: 260,
+    time: "10 分钟",
+    level: "入门",
+    tags: ["国民家常", "超下饭"],
+    desc: "酸甜浓郁、鸡蛋嫩滑，是厨房里的第一道安全感。",
+    prompt: "Food photography of Chinese home-style tomato scrambled eggs on a white plate, golden fluffy egg curds, glossy tomato chunks, chopped scallion garnish, warm rustic wooden table, soft natural light, light steam, appetizing, high detail, no text, no watermark",
+    ingredients: [
+      ["番茄", "300 g", 4],
+      ["鸡蛋", "3 个（约 150 g）", 3],
+      ["食用油", "20 ml", 2],
+      ["白糖", "5 g", 0.5],
+      ["葱花", "10 g", 0.5]
+    ],
+    ratio: "番茄 : 鸡蛋 : 油 : 糖葱 = 4 : 3 : 2 : 1",
+    steps: [
+      "番茄去蒂切滚刀块；鸡蛋加一小撮盐和一勺清水，打散至起细泡。",
+      "热锅下油，倒入蛋液，边缘凝固后轻轻划散，七成熟盛出。",
+      "锅内余油下番茄，中火炒到出汁，加白糖和盐调味。",
+      "倒回鸡蛋快速翻炒 20 秒，让蛋吸满汤汁，撒葱花出锅。"
+    ]
+  },
+  {
+    id: "braised-pork",
+    name: "红烧肉",
+    cat: "家常菜",
+    kcal: 620,
+    time: "90 分钟",
+    level: "中等",
+    tags: ["经典硬菜", "浓油赤酱"],
+    desc: "冰糖炒色，小火慢炖，肥而不腻，一勺汁能拌一碗饭。",
+    prompt: "Food photography of Chinese braised pork belly hongshaorou, glossy dark red caramelized sauce, cubes of pork belly on a white plate with a bowl of steamed rice, star anise and scallion garnish, dark moody background, warm side light, high detail, no text, no watermark",
+    ingredients: [
+      ["五花肉", "500 g", 5],
+      ["冰糖", "30 g", 1],
+      ["生抽", "30 ml", 1],
+      ["老抽", "10 ml", 0.5],
+      ["料酒", "30 ml", 1],
+      ["姜葱 / 八角", "适量", 1.5]
+    ],
+    ratio: "五花肉 : 冰糖 : 生抽 : 老抽 : 料酒 : 香料 = 5 : 1 : 1 : 0.5 : 1 : 1.5",
+    steps: [
+      "五花肉切 3 cm 见方的块，冷水下锅焯 3 分钟，捞出用温水洗净。",
+      "锅中放少许油和冰糖，小火慢炒至琥珀色，冒细密小泡。",
+      "下肉块快速翻炒裹满糖色，加姜葱、八角、料酒、生抽、老抽。",
+      "倒入没过肉的热水，小火加盖炖 60 分钟，中途翻动一次。",
+      "开盖转大火收汁，汤汁浓稠挂在肉上即可，撒葱花上桌。"
+    ]
+  },
+  {
+    id: "kungpao",
+    name: "宫保鸡丁",
+    cat: "家常菜",
+    kcal: 420,
+    time: "25 分钟",
+    level: "中等",
+    tags: ["川味", "微辣"],
+    desc: "鸡肉滑嫩、花生酥脆，酸甜微辣的糊辣香最勾人。",
+    prompt: "Food photography of Kung Pao chicken in a shallow ceramic bowl, diced chicken, roasted peanuts, dried red chilies, glossy brown sauce, scallion pieces, dark wooden table, chopsticks, spicy appetizing, high detail, no text, no watermark",
+    ingredients: [
+      ["鸡腿肉", "300 g", 4],
+      ["熟花生米", "50 g", 1.5],
+      ["干辣椒", "10 g", 1],
+      ["大葱", "50 g", 1],
+      ["宫保汁（生抽醋糖）", "30 ml", 2.5]
+    ],
+    ratio: "鸡丁 : 花生 : 干辣椒 : 大葱 : 宫保汁 = 4 : 1.5 : 1 : 1 : 2.5",
+    steps: [
+      "鸡腿肉切 1.5 cm 丁，加生抽、料酒和淀粉抓匀，腌 15 分钟。",
+      "生抽、香醋、白糖、淀粉和清水调成宫保汁，比例约 2 : 2 : 1.5 : 1。",
+      "热油下鸡丁滑炒至变色，盛出备用。",
+      "底油小火炒香干辣椒和花椒，下葱段、鸡丁翻炒。",
+      "倒入宫保汁大火收浓，关火后放花生米翻匀，保持酥脆。"
+    ]
+  },
+  {
+    id: "potato-shreds",
+    name: "青椒土豆丝",
+    cat: "家常菜",
+    kcal: 180,
+    time: "15 分钟",
+    level: "入门",
+    tags: ["爽脆", "素菜"],
+    desc: "土豆丝根根分明，酸辣脆爽，配粥配饭都合适。",
+    prompt: "Food photography of Chinese stir-fried shredded potato with green pepper on a white plate, thin golden potato strips, green pepper slivers, minced garlic, light rustic table, natural daylight, homely feel, high detail, no text, no watermark",
+    ingredients: [
+      ["土豆", "300 g", 5],
+      ["青椒", "100 g", 2],
+      ["食用油", "15 ml", 1.5],
+      ["蒜末", "10 g", 0.5],
+      ["白醋", "10 ml", 0.5],
+      ["盐", "适量", 0.5]
+    ],
+    ratio: "土豆 : 青椒 : 油 : 蒜醋盐 = 5 : 2 : 1.5 : 1.5",
+    steps: [
+      "土豆去皮切细丝，清水冲洗两遍去掉表面淀粉，泡水备用。",
+      "青椒去籽切丝，蒜切末。",
+      "热锅下油，蒜末爆香，下土豆丝大火快炒 1 分钟。",
+      "加青椒丝、盐和白醋，继续翻炒 1 分钟至断生即可，别炒太久。"
+    ]
+  },
+  {
+    id: "mapo-tofu",
+    name: "麻婆豆腐",
+    cat: "家常菜",
+    kcal: 300,
+    time: "20 分钟",
+    level: "中等",
+    tags: ["麻辣鲜香", "下饭神器"],
+    desc: "麻、辣、烫、香、酥、嫩，一勺汁就是半碗饭。",
+    prompt: "Food photography of Mapo tofu in a black bowl, silky tofu cubes in glossy red chili sauce, minced beef, Sichuan peppercorn, chopped green scallion, visible steam, dark background, dramatic side light, high detail, no text, no watermark",
+    ingredients: [
+      ["嫩豆腐", "400 g", 5],
+      ["牛肉末", "80 g", 1],
+      ["郫县豆瓣酱", "20 g", 1],
+      ["蒜苗", "30 g", 1],
+      ["花椒粉", "3 g", 0.5],
+      ["淀粉水 / 油", "30 g", 1.5]
+    ],
+    ratio: "豆腐 : 牛肉末 : 豆瓣酱 : 蒜苗 : 花椒淀粉 = 5 : 1 : 1 : 1 : 2",
+    steps: [
+      "嫩豆腐切 2 cm 方块，放入淡盐水中浸泡 5 分钟，捞出沥干。",
+      "热油炒散牛肉末，炒到酥香出油，下豆瓣酱炒出红油。",
+      "加 200 ml 热水烧开，用锅铲轻轻推入豆腐，小火煮 5 分钟。",
+      "分两次淋入淀粉水勾芡，撒蒜苗段。",
+      "出锅装碗，最后撒花椒粉，趁热上桌。"
+    ]
+  },
+  {
+    id: "shrimp-egg",
+    name: "虾仁滑蛋",
+    cat: "减脂轻食",
+    kcal: 240,
+    time: "10 分钟",
+    level: "简单",
+    tags: ["高蛋白", "快手"],
+    desc: "嫩到会抖的滑蛋裹住弹牙虾仁，十分钟搞定的高蛋白早餐。",
+    prompt: "Food photography of creamy soft scrambled eggs with plump pink shrimp on a white ceramic plate, chopped scallion, light oak table, soft natural window light, silky glossy texture, appetizing, high detail, no text, no watermark",
+    ingredients: [
+      ["虾仁", "150 g", 4],
+      ["鸡蛋", "2 个（约 100 g）", 3],
+      ["牛奶", "20 ml", 1],
+      ["橄榄油", "10 ml", 1],
+      ["葱花", "10 g", 1]
+    ],
+    ratio: "虾仁 : 蛋液 : 牛奶 : 油葱 = 4 : 3 : 1 : 2",
+    steps: [
+      "虾仁开背去虾线，加盐、白胡椒和少许料酒腌 5 分钟。",
+      "鸡蛋加牛奶和一小撮盐打散，过筛后蛋液更细腻。",
+      "热锅下油，虾仁炒至变色盛出；转小火倒入蛋液，用锅铲慢慢往中间推。",
+      "蛋液半凝固时倒回虾仁，撒葱花，关火用余温焖 30 秒。"
+    ]
+  },
+  {
+    id: "pepper-beef",
+    name: "黑椒牛柳彩椒",
+    cat: "减脂轻食",
+    kcal: 330,
+    time: "20 分钟",
+    level: "简单",
+    tags: ["高蛋白", "低脂"],
+    desc: "大火快炒的牛柳嫩而不柴，彩椒清甜，黑椒香气十足。",
+    prompt: "Food photography of black pepper beef strips stir-fried with red and yellow bell peppers and onion on a dark ceramic plate, glossy black pepper sauce, wooden table, natural side light, high detail, no text, no watermark",
+    ingredients: [
+      ["牛里脊", "200 g", 4],
+      ["彩椒", "150 g", 2.5],
+      ["洋葱", "60 g", 1],
+      ["黑椒汁", "20 g", 1],
+      ["橄榄油", "10 ml", 1],
+      ["蒜末", "5 g", 0.5]
+    ],
+    ratio: "牛柳 : 彩椒 : 洋葱 : 黑椒汁 : 油蒜 = 4 : 2.5 : 1 : 1 : 1.5",
+    steps: [
+      "牛里脊逆纹切条，加生抽、黑胡椒和淀粉抓匀，腌 15 分钟。",
+      "彩椒、洋葱切条；黑椒汁加两勺清水调开。",
+      "大火热锅下油，牛柳快速滑炒至七成熟盛出。",
+      "底油炒香蒜末和洋葱，下彩椒炒 1 分钟，倒回牛柳和黑椒汁，大火收汁。"
+    ]
+  },
+  {
+    id: "oat-chicken",
+    name: "燕麦鸡肉饼",
+    cat: "减脂轻食",
+    kcal: 300,
+    time: "20 分钟",
+    level: "简单",
+    tags: ["高蛋白", "饱腹"],
+    desc: "燕麦代替面包糠，外脆里嫩，一次做好可冷冻备餐。",
+    prompt: "Food photography of golden pan-fried oat chicken patties on a white plate with cherry tomatoes and lettuce, yogurt dip, light wooden table, soft daylight, healthy homemade look, high detail, no text, no watermark",
+    ingredients: [
+      ["鸡胸肉末", "200 g", 4],
+      ["即食燕麦", "50 g", 2],
+      ["鸡蛋", "1 个", 1.5],
+      ["胡萝卜碎", "50 g", 1],
+      ["洋葱碎", "40 g", 1],
+      ["橄榄油", "5 ml", 0.5]
+    ],
+    ratio: "鸡肉末 : 燕麦 : 鸡蛋 : 蔬菜碎 : 油 = 4 : 2 : 1.5 : 2 : 0.5",
+    steps: [
+      "鸡胸肉末加燕麦、鸡蛋、胡萝卜碎和洋葱碎。",
+      "加盐、黑胡椒和一勺生抽，顺时针搅拌到肉馅上劲。",
+      "手上蘸水，把肉馅压成 6 个 1.5 cm 厚的小饼。",
+      "平底锅刷薄油，小火每面煎 3–4 分钟至金黄熟透。"
+    ]
+  },
+  {
+    id: "steamed-bass",
+    name: "清蒸鲈鱼",
+    cat: "减脂轻食",
+    kcal: 230,
+    time: "25 分钟",
+    level: "简单",
+    tags: ["低脂", "高蛋白"],
+    desc: "只用蒸和淋油，鱼肉鲜嫩，几乎尝不到多余的油。",
+    prompt: "Food photography of Chinese steamed sea bass on a white oval plate, shredded ginger and scallion, hot soy sauce, light steam, light wood table, natural window light, fresh and clean, high detail, no text, no watermark",
+    ingredients: [
+      ["鲈鱼", "1 条（约 500 g）", 5],
+      ["姜丝", "15 g", 1],
+      ["葱段", "20 g", 1.5],
+      ["蒸鱼豉油", "20 ml", 1.5],
+      ["食用油", "10 ml", 1]
+    ],
+    ratio: "鲈鱼 : 姜 : 葱 : 豉油 : 热油 = 5 : 1 : 1.5 : 1.5 : 1",
+    steps: [
+      "鲈鱼处理干净，两面各划两刀，鱼身铺姜片和葱段。",
+      "水开后上锅，大火蒸 8–10 分钟，关火再焖 2 分钟。",
+      "倒掉盘中的腥水，去掉旧姜葱，重新铺上姜丝葱丝。",
+      "淋蒸鱼豉油，浇一勺烧到冒烟的热油激出香味。"
+    ]
+  },
+  {
+    id: "veg-egg-soup",
+    name: "低卡蔬菜蛋花汤",
+    cat: "减脂轻食",
+    kcal: 90,
+    time: "10 分钟",
+    level: "入门",
+    tags: ["低卡", "暖胃"],
+    desc: "一大碗不到 100 kcal，饭前喝能明显减少主食摄入。",
+    prompt: "Food photography of a light vegetable egg drop soup in a white bowl, tomato, mushrooms, spinach, silky egg ribbons, light steam, clean bright table, natural light, high detail, no text, no watermark",
+    ingredients: [
+      ["番茄", "150 g", 3],
+      ["鸡蛋", "1 个", 2.5],
+      ["白玉菇", "80 g", 1.5],
+      ["菠菜", "80 g", 1.5],
+      ["香油", "3 ml", 0.5],
+      ["盐", "适量", 1]
+    ],
+    ratio: "番茄 : 蛋液 : 菌菇 : 菠菜 : 香油盐 = 3 : 2.5 : 1.5 : 1.5 : 1.5",
+    steps: [
+      "番茄切小块，白玉菇去根，菠菜洗净切段。",
+      "锅中少油炒软番茄，加 600 ml 清水煮开，下白玉菇煮 3 分钟。",
+      "转小火，沿锅边淋入蛋液，静置 10 秒再轻轻推散。",
+      "放入菠菜煮 30 秒，加盐和香油后关火。"
+    ]
+  },
+  {
+    id: "pumpkin-salad",
+    name: "烤南瓜鸡腿沙拉",
+    cat: "减脂轻食",
+    kcal: 350,
+    time: "35 分钟",
+    level: "简单",
+    tags: ["高纤维", "饱腹"],
+    desc: "南瓜烤出焦糖香，鸡腿比鸡胸更嫩，减脂餐也能吃得满足。",
+    prompt: "Food photography of a roasted pumpkin and grilled chicken thigh salad bowl, mixed greens, red onion, vinaigrette, rustic ceramic bowl, warm natural light, appetizing fall colors, high detail, no text, no watermark",
+    ingredients: [
+      ["去皮鸡腿肉", "150 g", 3],
+      ["贝贝南瓜", "200 g", 4],
+      ["生菜", "100 g", 2],
+      ["油醋汁", "20 ml", 1]
+    ],
+    ratio: "鸡腿肉 : 南瓜 : 生菜 : 油醋汁 = 3 : 4 : 2 : 1",
+    steps: [
+      "鸡腿肉用盐、黑胡椒和少许橄榄油腌 15 分钟；南瓜切 2 cm 块。",
+      "南瓜铺烤盘，200℃ 烤 20 分钟至边缘焦香。",
+      "平底锅每面煎鸡腿肉 4 分钟，静置 3 分钟后切条。",
+      "生菜垫底，摆上南瓜和鸡腿肉，淋油醋汁拌匀。"
+    ]
+  },
+  {
+    id: "tofu-shrimp",
+    name: "豆腐虾仁煲",
+    cat: "减脂轻食",
+    kcal: 260,
+    time: "20 分钟",
+    level: "简单",
+    tags: ["高蛋白", "低脂"],
+    desc: "嫩豆腐吸满虾的鲜味，连汤带豆腐一起吃掉。",
+    prompt: "Food photography of tofu and shrimp clay pot, silky tofu cubes, pink shrimp, shiitake mushrooms, glossy light sauce, black clay pot, steam rising, warm natural light, high detail, no text, no watermark",
+    ingredients: [
+      ["嫩豆腐", "300 g", 4],
+      ["虾仁", "120 g", 3],
+      ["香菇", "60 g", 1],
+      ["蒜末葱花", "15 g", 0.5],
+      ["生抽蚝油", "20 ml", 1],
+      ["淀粉水", "15 g", 0.5]
+    ],
+    ratio: "豆腐 : 虾仁 : 香菇 : 调味 : 淀粉水 = 4 : 3 : 1 : 1.5 : 0.5",
+    steps: [
+      "豆腐切块，淡盐水泡 5 分钟；香菇切片，虾仁去虾线。",
+      "砂锅少油炒香蒜末和香菇，加生抽、蚝油和 150 ml 水煮开。",
+      "轻轻放入豆腐，小火煮 3 分钟，再下虾仁煮 2 分钟。",
+      "淋淀粉水收到微稠，撒葱花，连锅上桌。"
+    ]
+  },
+  {
+    id: "tuna-salad",
+    name: "金枪鱼玉米沙拉",
+    cat: "减脂轻食",
+    kcal: 280,
+    time: "10 分钟",
+    level: "入门",
+    tags: ["高蛋白", "免开火"],
+    desc: "不开火十分钟拌好，适合忙碌工作日的午餐。",
+    prompt: "Top-down food photography of tuna corn salad with lettuce, cherry tomatoes and yogurt dressing in a white bowl, bright daylight, fresh clean styling, marble surface, high detail, no text, no watermark",
+    ingredients: [
+      ["水浸金枪鱼", "100 g", 3],
+      ["甜玉米粒", "80 g", 2],
+      ["生菜", "100 g", 2],
+      ["小番茄", "80 g", 2],
+      ["希腊酸奶", "40 g", 1]
+    ],
+    ratio: "金枪鱼 : 玉米 : 生菜 : 番茄 : 酸奶酱 = 3 : 2 : 2 : 2 : 1",
+    steps: [
+      "金枪鱼沥干水分，用叉子压散。",
+      "玉米粒焯熟放凉，生菜撕小片，小番茄对半切。",
+      "希腊酸奶加少许盐、黑胡椒和柠檬汁调成酱。",
+      "所有食材装碗，淋上酸奶酱拌匀即可。"
+    ]
+  },
+  {
+    id: "chicken-brown-rice",
+    name: "香菇滑鸡糙米饭",
+    cat: "减脂轻食",
+    kcal: 420,
+    time: "30 分钟",
+    level: "简单",
+    tags: ["一锅出", "高蛋白"],
+    desc: "嫩鸡腿配香菇和糙米，一份就是完整的一餐。",
+    prompt: "Food photography of braised chicken and shiitake mushrooms over brown rice in a ceramic bowl, bok choy, glossy sauce, wooden table, warm natural light, homey healthy, high detail, no text, no watermark",
+    ingredients: [
+      ["鸡腿肉", "150 g", 3],
+      ["糙米饭", "200 g", 3],
+      ["香菇", "100 g", 2],
+      ["青菜", "100 g", 1.5],
+      ["生抽蚝油", "20 ml", 0.5]
+    ],
+    ratio: "鸡腿肉 : 糙米饭 : 香菇 : 青菜 : 酱汁 = 3 : 3 : 2 : 1.5 : 0.5",
+    steps: [
+      "鸡腿肉切块，加生抽和淀粉腌 10 分钟；香菇切片。",
+      "热锅少油煎鸡块至表面金黄，下香菇炒软。",
+      "加生抽、蚝油和半碗水，小火焖 8 分钟收汁。",
+      "糙米饭装碗，铺上香菇滑鸡，配焯水青菜。"
+    ]
+  },
+  {
+    id: "air-fryer-wings",
+    name: "空气炸鸡翅",
+    cat: "减脂轻食",
+    kcal: 320,
+    time: "25 分钟",
+    level: "简单",
+    tags: ["少油", "高蛋白"],
+    desc: "不用一滴油炸出脆皮鸡翅，解馋又不越界。",
+    prompt: "Food photography of crispy air-fried chicken wings on a white plate, golden skin, black pepper, lemon wedge, light wood table, natural daylight, appetizing, high detail, no text, no watermark",
+    ingredients: [
+      ["鸡中翅", "6 只（约 300 g）", 6],
+      ["生抽", "15 ml", 1],
+      ["蒜末", "10 g", 1],
+      ["黑胡椒", "2 g", 0.5],
+      ["辣椒粉", "2 g", 0.5],
+      ["蜂蜜", "5 g", 1]
+    ],
+    ratio: "鸡翅 : 生抽 : 蒜末 : 胡椒辣椒 : 蜂蜜 = 6 : 1 : 1 : 1 : 1",
+    steps: [
+      "鸡翅两面各划两刀，加生抽、蒜末、黑胡椒、辣椒粉和蜂蜜抓匀，腌 20 分钟。",
+      "空气炸锅 180℃ 预热 3 分钟，鸡翅平铺不要叠放。",
+      "180℃ 烤 12 分钟，翻面再烤 8 分钟。",
+      "最后 200℃ 烤 3 分钟上色，出锅挤上柠檬汁。"
+    ]
+  },
+  {
+    id: "cola-wings",
+    name: "可乐鸡翅",
+    cat: "家常菜",
+    kcal: 480,
+    time: "30 分钟",
+    level: "简单",
+    tags: ["甜咸", "下饭"],
+    desc: "可乐里的糖分让鸡翅自带焦糖色，零厨艺也很难失败。",
+    prompt: "Food photography of Chinese cola chicken wings on a white plate, glossy dark caramel glaze, sesame seeds, chopped scallion, rustic wooden table, warm light, high detail, no text, no watermark",
+    ingredients: [
+      ["鸡中翅", "8 只（约 400 g）", 5],
+      ["可乐", "300 ml", 3],
+      ["生抽", "20 ml", 1],
+      ["姜片", "10 g", 0.5],
+      ["料酒", "15 ml", 0.5]
+    ],
+    ratio: "鸡翅 : 可乐 : 生抽 : 姜 : 料酒 = 5 : 3 : 1 : 0.5 : 0.5",
+    steps: [
+      "鸡翅两面划刀，冷水下锅加姜片和料酒焯 3 分钟，捞出擦干。",
+      "锅中少油，鸡翅煎至两面微黄。",
+      "倒入可乐没过鸡翅一半，加生抽和姜片，大火烧开转小火焖 15 分钟。",
+      "大火收汁至浓稠发亮，撒白芝麻和葱花。"
+    ]
+  },
+  {
+    id: "fish-fragrant-pork",
+    name: "鱼香肉丝",
+    cat: "家常菜",
+    kcal: 380,
+    time: "25 分钟",
+    level: "中等",
+    tags: ["酸甜微辣", "下饭"],
+    desc: "没有鱼却有鱼香，酸甜咸辣在一口里层层展开。",
+    prompt: "Food photography of Chinese yuxiang shredded pork with wood ear, carrot and green pepper on a white plate, glossy red sauce, dark wood table, warm light, high detail, no text, no watermark",
+    ingredients: [
+      ["猪里脊", "250 g", 4],
+      ["木耳", "60 g", 1],
+      ["胡萝卜", "60 g", 1],
+      ["青椒", "60 g", 1],
+      ["鱼香汁", "40 ml", 3]
+    ],
+    ratio: "肉丝 : 木耳 : 胡萝卜 : 青椒 : 鱼香汁 = 4 : 1 : 1 : 1 : 3",
+    steps: [
+      "里脊切细丝，加盐、料酒和淀粉抓匀，腌 15 分钟。",
+      "木耳泡发切丝，胡萝卜、青椒切丝。",
+      "生抽、醋、糖、淀粉和清水调成鱼香汁。",
+      "热油滑炒肉丝至变色盛出，底油炒香豆瓣酱和蒜末。",
+      "下配菜炒 1 分钟，倒回肉丝和鱼香汁，大火收汁。"
+    ]
+  },
+  {
+    id: "sweet-sour-pork",
+    name: "糖醋里脊",
+    cat: "家常菜",
+    kcal: 520,
+    time: "40 分钟",
+    level: "中等",
+    tags: ["酸甜", "宴客"],
+    desc: "外壳酥脆、里面软嫩，糖醋汁挂在每一根肉条上。",
+    prompt: "Food photography of Chinese sweet and sour pork tenderloin on a white plate, crispy golden pieces coated in glossy red sauce, sesame seeds, light steam, warm rustic table, high detail, no text, no watermark",
+    ingredients: [
+      ["猪里脊", "300 g", 5],
+      ["淀粉", "60 g", 1.5],
+      ["番茄酱", "40 g", 1.5],
+      ["白糖", "25 g", 1],
+      ["白醋", "20 ml", 1]
+    ],
+    ratio: "里脊 : 淀粉 : 番茄酱 : 糖 : 醋 = 5 : 1.5 : 1.5 : 1 : 1",
+    steps: [
+      "里脊切条，加盐和料酒腌 10 分钟，裹满干淀粉。",
+      "油温六成热下锅炸至定型捞出，升高油温复炸 30 秒至金黄酥脆。",
+      "锅中留底油，下番茄酱、白糖、白醋和半碗水熬到冒泡浓稠。",
+      "倒入炸好的里脊快速翻匀，让每条都裹上糖醋汁，撒芝麻出锅。"
+    ]
+  },
+  {
+    id: "dry-fried-beans",
+    name: "干煸四季豆",
+    cat: "家常菜",
+    kcal: 260,
+    time: "20 分钟",
+    level: "中等",
+    tags: ["干香", "微辣"],
+    desc: "四季豆煸到起皱，肉末和花椒的香气全渗进去。",
+    prompt: "Food photography of dry-fried green beans with minced pork and dried chilies in a black bowl, blistered green beans, glossy oil, dark slate background, side light, high detail, no text, no watermark",
+    ingredients: [
+      ["四季豆", "300 g", 5],
+      ["猪肉末", "80 g", 1.5],
+      ["干辣椒花椒", "8 g", 1],
+      ["蒜末", "10 g", 1],
+      ["食用油", "20 ml", 1.5]
+    ],
+    ratio: "四季豆 : 肉末 : 干辣椒 : 蒜末 : 油 = 5 : 1.5 : 1 : 1 : 1.5",
+    steps: [
+      "四季豆掐头去尾，掰成 5 cm 段，洗净后彻底擦干。",
+      "锅中放油，中小火把四季豆煸到表皮起皱发软，盛出。",
+      "底油炒散肉末，加干辣椒、花椒和蒜末炒香。",
+      "倒回四季豆，加盐和少许生抽，大火翻炒 1 分钟。"
+    ]
+  },
+  {
+    id: "garlic-scape-pork",
+    name: "蒜苔炒肉",
+    cat: "家常菜",
+    kcal: 340,
+    time: "20 分钟",
+    level: "简单",
+    tags: ["家常", "下饭"],
+    desc: "蒜苔脆嫩带甜，肉丝滑嫩，是工作日晚饭的常客。",
+    prompt: "Food photography of Chinese garlic scape and pork stir-fry on a white plate, thin pork slices, vibrant green scapes, glossy sauce, light wood table, natural light, high detail, no text, no watermark",
+    ingredients: [
+      ["蒜苔", "250 g", 4],
+      ["猪肉丝", "150 g", 3],
+      ["生抽", "15 ml", 1],
+      ["食用油", "15 ml", 1],
+      ["盐 / 淀粉", "适量", 1]
+    ],
+    ratio: "蒜苔 : 肉丝 : 生抽 : 油 : 盐淀粉 = 4 : 3 : 1 : 1 : 1",
+    steps: [
+      "蒜苔切段，猪肉切丝，加生抽和淀粉腌 10 分钟。",
+      "蒜苔焯水 30 秒，捞出沥干，保持翠绿。",
+      "热锅下油，肉丝滑炒至变色。",
+      "下蒜苔大火翻炒 1 分钟，加盐和少许生抽调味。"
+    ]
+  },
+  {
+    id: "onion-beef",
+    name: "洋葱炒牛肉",
+    cat: "家常菜",
+    kcal: 320,
+    time: "20 分钟",
+    level: "简单",
+    tags: ["补铁", "快手"],
+    desc: "洋葱炒到微甜，牛肉嫩滑，酱汁拌饭特别香。",
+    prompt: "Food photography of onion beef stir-fry on a dark plate, tender beef slices, caramelized onion, green pepper, glossy sauce, wooden table, warm side light, high detail, no text, no watermark",
+    ingredients: [
+      ["牛肉片", "200 g", 4],
+      ["洋葱", "150 g", 3],
+      ["青椒", "60 g", 1],
+      ["蚝油 / 生抽", "20 ml", 1],
+      ["食用油", "10 ml", 1]
+    ],
+    ratio: "牛肉 : 洋葱 : 青椒 : 酱汁 : 油 = 4 : 3 : 1 : 1 : 1",
+    steps: [
+      "牛肉逆纹切薄片，加生抽、淀粉和少许油抓匀，腌 10 分钟。",
+      "洋葱切块，青椒切块。",
+      "大火热锅，牛肉快速滑炒至七成熟盛出。",
+      "底油炒香洋葱至微透明，下青椒和牛肉，加蚝油大火翻匀。"
+    ]
+  },
+  {
+    id: "eggplant-pot",
+    name: "茄子煲",
+    cat: "家常菜",
+    kcal: 360,
+    time: "30 分钟",
+    level: "中等",
+    tags: ["软糯", "下饭"],
+    desc: "茄子吸饱肉末酱汁，软糯入味，一锅能配两碗饭。",
+    prompt: "Food photography of Chinese braised eggplant clay pot with minced pork, glossy dark sauce, scallion, steam rising, dark background, warm light, high detail, no text, no watermark",
+    ingredients: [
+      ["长茄子", "400 g", 5],
+      ["肉末", "100 g", 1.5],
+      ["蒜末", "15 g", 1],
+      ["生抽 / 蚝油", "25 ml", 1.5],
+      ["食用油", "20 ml", 1]
+    ],
+    ratio: "茄子 : 肉末 : 蒜末 : 酱汁 : 油 = 5 : 1.5 : 1 : 1.5 : 1",
+    steps: [
+      "茄子切长条，撒少许盐腌 10 分钟，挤掉水分。",
+      "锅中多放一点油，茄子煎到表面微焦变软，盛出。",
+      "底油炒散肉末，加蒜末和生抽、蚝油炒香。",
+      "茄子回锅，加半碗水小火焖 5 分钟，收汁后转入砂锅。"
+    ]
+  },
+  {
+    id: "stir-fried-greens",
+    name: "清炒时蔬",
+    cat: "家常菜",
+    kcal: 120,
+    time: "10 分钟",
+    level: "入门",
+    tags: ["清爽", "低卡"],
+    desc: "大火快炒锁住水分，青菜翠绿不发黄。",
+    prompt: "Food photography of Chinese stir-fried bok choy with garlic on a white plate, vibrant green leaves, glossy light sauce, clean bright table, natural daylight, fresh, high detail, no text, no watermark",
+    ingredients: [
+      ["上海青", "300 g", 5],
+      ["蒜末", "15 g", 1.5],
+      ["食用油", "10 ml", 1.5],
+      ["盐", "适量", 1],
+      ["水淀粉", "10 g", 1]
+    ],
+    ratio: "青菜 : 蒜末 : 油 : 盐 : 水淀粉 = 5 : 1.5 : 1.5 : 1 : 1",
+    steps: [
+      "上海青对半切开，洗净沥干，菜梗和菜叶分开。",
+      "热锅下油，蒜末爆香，先下菜梗大火炒 30 秒。",
+      "下菜叶快速翻炒至变软，加盐调味。",
+      "淋少许水淀粉勾薄芡，让菜叶挂住味道。"
+    ]
+  },
+  {
+    id: "cabbage-noodles",
+    name: "白菜炖粉条",
+    cat: "家常菜",
+    kcal: 240,
+    time: "30 分钟",
+    level: "简单",
+    tags: ["暖胃", "家常"],
+    desc: "白菜的清甜和粉条的软糯，是冬天最朴实的一锅。",
+    prompt: "Food photography of Chinese cabbage and glass noodles stew in a clay pot, pork slices, clear broth, steam rising, warm rustic table, natural light, homey, high detail, no text, no watermark",
+    ingredients: [
+      ["白菜", "400 g", 5],
+      ["红薯粉条", "100 g", 2],
+      ["五花肉片", "60 g", 1.5],
+      ["生抽", "15 ml", 1],
+      ["葱姜", "10 g", 0.5]
+    ],
+    ratio: "白菜 : 粉条 : 五花肉 : 生抽 : 葱姜 = 5 : 2 : 1.5 : 1 : 0.5",
+    steps: [
+      "粉条用温水泡软；白菜切大块，菜帮和菜叶分开。",
+      "锅中少油煸香五花肉片，加葱姜和生抽。",
+      "先下菜帮炒软，加 500 ml 热水和粉条，中火炖 10 分钟。",
+      "下菜叶再炖 5 分钟，加盐调味，汤汁略收即可。"
+    ]
+  },
+  {
+    id: "hot-sour-soup",
+    name: "酸辣汤",
+    cat: "家常菜",
+    kcal: 150,
+    time: "20 分钟",
+    level: "简单",
+    tags: ["开胃", "低卡"],
+    desc: "酸来自醋、辣来自白胡椒，喝完从胃里暖到指尖。",
+    prompt: "Food photography of Chinese hot and sour soup in a white bowl, tofu strips, wood ear, egg ribbons, black pepper, steam, dark wood table, warm light, high detail, no text, no watermark",
+    ingredients: [
+      ["嫩豆腐", "150 g", 3],
+      ["木耳", "50 g", 1],
+      ["鸡蛋", "1 个", 2],
+      ["香醋", "20 ml", 1],
+      ["白胡椒粉 / 淀粉", "20 g", 1],
+      ["胡萝卜丝", "50 g", 1],
+      ["高汤", "600 ml", 1]
+    ],
+    ratio: "豆腐 : 木耳 : 蛋液 : 醋 : 胡椒淀粉 : 胡萝卜 : 汤 = 3 : 1 : 2 : 1 : 1 : 1 : 1",
+    steps: [
+      "豆腐、木耳、胡萝卜切细丝。",
+      "高汤煮开，下所有配菜煮 3 分钟。",
+      "加生抽、盐、白胡椒粉和香醋调味。",
+      "淋水淀粉勾薄芡，再淋蛋液推成蛋花，关火滴香油。"
+    ]
+  },
+  {
+    id: "lemon-herb-chicken",
+    name: "柠檬香草煎鸡胸",
+    cat: "减脂轻食",
+    kcal: 300,
+    time: "25 分钟",
+    level: "简单",
+    tags: ["高蛋白", "低脂"],
+    desc: "柠檬和香草压住鸡胸的单调，外焦里嫩，切开还有汁水。",
+    prompt: "Food photography of lemon herb pan-seared chicken breast on a white plate, golden crust, lemon slices, fresh rosemary and thyme, asparagus, light oak table, natural window light, high detail, no text, no watermark",
+    ingredients: [
+      ["鸡胸肉", "250 g", 4],
+      ["柠檬", "半个", 1],
+      ["橄榄油", "10 ml", 1],
+      ["蒜末", "10 g", 1],
+      ["迷迭香 / 百里香", "3 g", 1],
+      ["海盐 / 黑胡椒", "适量", 2]
+    ],
+    ratio: "鸡胸肉 : 柠檬 : 油蒜 : 香草 : 调味 = 4 : 1 : 2 : 1 : 2",
+    steps: [
+      "鸡胸肉从中间片成两片，用刀背轻拍至厚薄均匀。",
+      "加柠檬汁、蒜末、香草、海盐和黑胡椒抓匀，腌 15 分钟。",
+      "平底锅中火，鸡胸每面煎 3–4 分钟至金黄、边缘变白。",
+      "关火后挤上柠檬汁，静置 3 分钟再切条。"
+    ]
+  },
+  {
+    id: "shredded-chicken",
+    name: "凉拌手撕鸡胸",
+    cat: "减脂轻食",
+    kcal: 220,
+    time: "20 分钟",
+    level: "入门",
+    tags: ["低卡", "高蛋白"],
+    desc: "水煮后冰镇再手撕，鸡丝不柴，酸辣汁一拌就开胃。",
+    prompt: "Food photography of Chinese cold shredded chicken breast salad with cucumber strips, chili oil, sesame seeds and cilantro on a white plate, bright natural light, fresh clean styling, high detail, no text, no watermark",
+    ingredients: [
+      ["鸡胸肉", "200 g", 4],
+      ["黄瓜", "150 g", 3],
+      ["蒜末", "10 g", 1],
+      ["生抽 / 香醋", "20 ml", 1],
+      ["辣椒油", "5 ml", 0.5],
+      ["白芝麻", "5 g", 0.5]
+    ],
+    ratio: "鸡胸肉 : 黄瓜 : 蒜末 : 酱汁 : 辣油芝麻 = 4 : 3 : 1 : 1 : 1",
+    steps: [
+      "鸡胸肉冷水下锅，加姜片和料酒，中火煮 12 分钟。",
+      "捞出放进冰水浸泡 5 分钟，顺着纹理撕成细丝。",
+      "黄瓜拍碎切段，蒜切末。",
+      "生抽、香醋、蒜末和辣椒油调成汁，淋在鸡丝上，撒白芝麻拌匀。"
+    ]
+  },
+  {
+    id: "chicken-meatball-soup",
+    name: "番茄鸡胸肉丸汤",
+    cat: "减脂轻食",
+    kcal: 260,
+    time: "30 分钟",
+    level: "简单",
+    tags: ["低脂", "高蛋白"],
+    desc: "鸡胸打成丸，番茄熬成汤，低脂但不寡淡。",
+    prompt: "Food photography of tomato chicken meatball soup in a white bowl, red broth, tender chicken meatballs, tomato wedges, chopped scallion, light steam, warm natural light, high detail, no text, no watermark",
+    ingredients: [
+      ["鸡胸肉末", "250 g", 4],
+      ["番茄", "300 g", 4],
+      ["鸡蛋清", "1 个", 0.5],
+      ["姜末", "5 g", 0.5],
+      ["淀粉", "10 g", 0.5],
+      ["葱花", "5 g", 0.5]
+    ],
+    ratio: "鸡肉末 : 番茄 : 蛋清 : 姜末 : 淀粉葱 = 4 : 4 : 0.5 : 0.5 : 1",
+    steps: [
+      "鸡胸肉末加蛋清、姜末、淀粉、盐和少许清水，顺时针搅至上劲。",
+      "番茄去皮切块，锅中少油炒出沙，加 600 ml 热水煮开。",
+      "虎口挤出小肉丸下锅，小火煮 6 分钟至全部浮起。",
+      "加盐和白胡椒调味，撒葱花出锅。"
+    ]
+  },
+  {
+    id: "curry-chicken-cauli",
+    name: "咖喱鸡胸花椰菜饭",
+    cat: "减脂轻食",
+    kcal: 300,
+    time: "25 分钟",
+    level: "简单",
+    tags: ["低碳", "高蛋白"],
+    desc: "花椰菜代替米饭，咖喱汁裹住鸡块，低碳水也吃得满足。",
+    prompt: "Food photography of chicken curry with cauliflower rice in a white bowl, golden curry sauce, chicken cubes, broccoli, carrot, fresh cilantro, light wood table, natural light, healthy, high detail, no text, no watermark",
+    ingredients: [
+      ["鸡胸肉", "200 g", 4],
+      ["花椰菜碎", "250 g", 3.5],
+      ["洋葱", "60 g", 1],
+      ["咖喱粉", "10 g", 1],
+      ["椰奶", "50 ml", 0.5]
+    ],
+    ratio: "鸡胸肉 : 花椰菜碎 : 洋葱 : 咖喱 : 椰奶 = 4 : 3.5 : 1 : 1 : 0.5",
+    steps: [
+      "鸡胸肉切 2 cm 块，加少许盐和咖喱粉腌 10 分钟；洋葱切碎。",
+      "锅中少油炒香洋葱，下鸡块煎至表面变白。",
+      "加咖喱粉炒香，倒椰奶和半碗水，小火煮 8 分钟收浓。",
+      "花椰菜碎用料理机打碎，干锅炒 3 分钟，装碗后淋上咖喱鸡。"
+    ]
+  },
+  {
+    id: "chicken-veggie-wrap",
+    name: "鸡胸肉蔬菜卷",
+    cat: "减脂轻食",
+    kcal: 330,
+    time: "15 分钟",
+    level: "入门",
+    tags: ["高蛋白", "便携"],
+    desc: "全麦卷饼卷上鸡胸和蔬菜，做好带走当午餐。",
+    prompt: "Food photography of chicken breast and vegetable wraps on a wooden board, whole wheat tortilla, lettuce, cucumber, carrot, yogurt sauce, bright natural light, fresh healthy, high detail, no text, no watermark",
+    ingredients: [
+      ["全麦卷饼", "2 张", 3],
+      ["鸡胸肉", "150 g", 3],
+      ["生菜", "60 g", 1],
+      ["黄瓜 / 胡萝卜丝", "100 g", 1.5],
+      ["无糖酸奶", "40 g", 1],
+      ["黑胡椒 / 盐", "适量", 0.5]
+    ],
+    ratio: "卷饼 : 鸡胸 : 生菜 : 蔬菜丝 : 酸奶酱 : 调味 = 3 : 3 : 1 : 1.5 : 1 : 0.5",
+    steps: [
+      "鸡胸肉切条，用盐和黑胡椒腌 5 分钟，平底锅煎熟。",
+      "生菜洗净沥干，黄瓜和胡萝卜切细丝。",
+      "酸奶加盐、黑胡椒和柠檬汁调成酱。",
+      "卷饼铺上生菜、蔬菜丝和鸡胸肉，淋酱后卷紧，对半切开。"
+    ]
+  },
+  {
+    id: "twice-cooked-pork",
+    name: "回锅肉",
+    cat: "家常菜",
+    kcal: 550,
+    time: "30 分钟",
+    level: "中等",
+    tags: ["川味", "下饭"],
+    desc: "肉片煸到卷曲，豆瓣酱炒出红油，蒜苗一拌就是米饭杀手。",
+    prompt: "Food photography of Chinese twice-cooked pork on a white plate, thin pork belly slices with curled edges, green garlic sprouts, red chili bean paste, glossy sauce, dark wood table, warm light, high detail, no text, no watermark",
+    ingredients: [
+      ["五花肉", "300 g", 4],
+      ["蒜苗", "100 g", 2],
+      ["郫县豆瓣酱", "20 g", 1],
+      ["豆豉", "10 g", 1],
+      ["生抽 / 油", "20 ml", 1],
+      ["白糖", "5 g", 1]
+    ],
+    ratio: "五花肉 : 蒜苗 : 豆瓣酱 : 豆豉 : 生抽油 : 糖 = 4 : 2 : 1 : 1 : 1 : 1",
+    steps: [
+      "五花肉整块冷水下锅，加姜葱煮 20 分钟至筷子能插入，捞出放凉切薄片。",
+      "蒜苗斜切段，蒜白和蒜叶分开。",
+      "锅中少油，下肉片中火煸至卷曲出油。",
+      "肉片拨到一边，下豆瓣酱和豆豉炒出红油，加生抽和糖翻匀。",
+      "先下蒜白炒 30 秒，再下蒜叶大火炒至断生。"
+    ]
+  },
+  {
+    id: "di-san-xian",
+    name: "地三鲜",
+    cat: "家常菜",
+    kcal: 320,
+    time: "25 分钟",
+    level: "中等",
+    tags: ["东北菜", "下饭"],
+    desc: "土豆绵、茄子软、青椒脆，酱汁一裹就是东北人的下饭担当。",
+    prompt: "Food photography of Chinese di san xian, braised potato chunks, eggplant and green pepper on a white plate, glossy brown sauce, garlic, warm rustic wooden table, natural light, high detail, no text, no watermark",
+    ingredients: [
+      ["土豆", "200 g", 3],
+      ["茄子", "250 g", 4],
+      ["青椒", "100 g", 1.5],
+      ["蒜末", "15 g", 0.5],
+      ["生抽 / 蚝油", "20 ml", 0.5],
+      ["食用油", "20 ml", 0.5]
+    ],
+    ratio: "土豆 : 茄子 : 青椒 : 蒜末 : 酱汁 : 油 = 3 : 4 : 1.5 : 0.5 : 0.5 : 0.5",
+    steps: [
+      "土豆、茄子切滚刀块，青椒切块；茄子撒盐腌 10 分钟挤干水分。",
+      "锅中放油，土豆煎至表面金黄盛出，再把茄子煎软盛出。",
+      "底油炒香蒜末，加生抽、蚝油和半碗水烧开。",
+      "倒入土豆和茄子焖 3 分钟，下青椒大火收汁。"
+    ]
+  },
+  {
+    id: "boiled-beef",
+    name: "水煮牛肉",
+    cat: "家常菜",
+    kcal: 420,
+    time: "35 分钟",
+    level: "中等",
+    tags: ["麻辣", "川味"],
+    desc: "牛肉滑嫩、汤底麻辣，最后那勺热油是整道菜的灵魂。",
+    prompt: "Food photography of Sichuan boiled beef in a black bowl, tender beef slices in red chili broth, bean sprouts, dried chilies, Sichuan peppercorn, chopped scallion, steam, dark background, dramatic light, no text, no watermark",
+    ingredients: [
+      ["牛里脊", "300 g", 5],
+      ["豆芽", "150 g", 2],
+      ["郫县豆瓣酱", "25 g", 1],
+      ["干辣椒 / 花椒", "10 g", 1],
+      ["蛋清 / 淀粉", "30 g", 0.5],
+      ["食用油", "20 ml", 0.5]
+    ],
+    ratio: "牛肉 : 豆芽 : 豆瓣酱 : 辣椒花椒 : 蛋清淀粉 : 油 = 5 : 2 : 1 : 1 : 0.5 : 0.5",
+    steps: [
+      "牛里脊逆纹切薄片，加蛋清、淀粉、盐和少许水抓匀，腌 15 分钟。",
+      "豆芽焯水，铺在碗底。",
+      "锅中炒香豆瓣酱，加 600 ml 热水煮开，转小火下牛肉片滑散，煮 1 分钟。",
+      "连汤倒入碗中，表面撒干辣椒、花椒和蒜末。",
+      "烧一勺热油浇上去激香，撒葱花。"
+    ]
+  },
+  {
+    id: "chive-eggs",
+    name: "韭菜炒鸡蛋",
+    cat: "家常菜",
+    kcal: 220,
+    time: "10 分钟",
+    level: "入门",
+    tags: ["快手", "家常"],
+    desc: "韭菜断生就出锅，鸡蛋嫩、韭香足，十分钟搞定的下饭菜。",
+    prompt: "Food photography of Chinese chive scrambled eggs on a white plate, golden fluffy eggs, bright green chives, light wood table, natural window light, homey, high detail, no text, no watermark",
+    ingredients: [
+      ["韭菜", "200 g", 4],
+      ["鸡蛋", "3 个（约 150 g）", 3],
+      ["食用油", "20 ml", 2],
+      ["盐", "适量", 1]
+    ],
+    ratio: "韭菜 : 鸡蛋 : 油 : 盐 = 4 : 3 : 2 : 1",
+    steps: [
+      "韭菜洗净沥干，切 4 cm 段；鸡蛋加少许盐打散。",
+      "热锅下油，倒入蛋液炒至凝固划散，盛出。",
+      "余油下韭菜大火炒 30 秒，加盐。",
+      "倒回鸡蛋快速翻匀，韭菜断生后立刻出锅。"
+    ]
+  },
+  {
+    id: "winter-melon-rib-soup",
+    name: "冬瓜排骨汤",
+    cat: "家常菜",
+    kcal: 280,
+    time: "60 分钟",
+    level: "简单",
+    tags: ["清润", "汤品"],
+    desc: "汤色清亮、冬瓜透明，排骨炖到轻轻一咬就脱骨。",
+    prompt: "Food photography of winter melon and pork rib soup in a white bowl, clear broth, tender ribs, translucent winter melon slices, goji berries, scallion, light steam, clean bright table, natural light, no text, no watermark",
+    ingredients: [
+      ["排骨", "400 g", 5],
+      ["冬瓜", "400 g", 3],
+      ["姜片", "10 g", 0.5],
+      ["料酒", "15 ml", 0.5],
+      ["枸杞", "5 g", 0.5],
+      ["盐", "适量", 0.5]
+    ],
+    ratio: "排骨 : 冬瓜 : 姜 : 料酒 : 枸杞盐 = 5 : 3 : 0.5 : 0.5 : 1",
+    steps: [
+      "排骨冷水下锅，加姜片和料酒焯 3 分钟，捞出洗净浮沫。",
+      "排骨放入砂锅，加足量热水和姜片，大火烧开转小火炖 40 分钟。",
+      "冬瓜去皮切厚片，下锅再炖 15 分钟至透明。",
+      "加盐和枸杞煮 2 分钟，撒葱花即可。"
+    ]
+  }
+];
+
+const CAT_COUNTS = RECIPES.reduce((acc, r) => {
+  acc[r.cat] = (acc[r.cat] || 0) + 1;
+  return acc;
+}, { all: RECIPES.length });
+
+document.querySelectorAll("[data-count]").forEach((el) => {
+  el.textContent = CAT_COUNTS[el.dataset.count] ?? 0;
+});
+
+const grid = document.getElementById("grid");
+const empty = document.getElementById("empty");
+const count = document.getElementById("count");
+const searchInput = document.getElementById("search");
+const modal = document.getElementById("modal");
+const panel = document.getElementById("panel");
+const filters = document.getElementById("filters");
+
+const state = { cat: "all", q: "" };
+let lastFocused = null;
+
+const imgUrl = (prompt) =>
+  IMG_API + encodeURIComponent(prompt) + "&image_size=landscape_4_3";
+
+function cardHTML(r, index) {
+  const cls = r.cat === "减脂轻食" ? "light" : "home";
+  return `
+    <article class="card" data-id="${r.id}" tabindex="0" role="button"
+      aria-label="查看 ${r.name} 的做法" style="animation-delay:${Math.min(index * 45, 320)}ms">
+      <div class="media">
+        <span class="tag ${cls}">${r.cat}</span>
+        <span class="kcal">${r.kcal} kcal</span>
+        <img src="${imgUrl(r.prompt)}" alt="${r.name}" loading="lazy"
+          onload="this.classList.add('loaded')" onerror="this.remove()">
+      </div>
+      <div class="card-body">
+        <h3>${r.name}</h3>
+        <p class="card-desc">${r.desc}</p>
+        <div class="card-foot">
+          <span><b>${r.time}</b> · ${r.level}</span>
+          <span class="more">看做法 <i>→</i></span>
+        </div>
+      </div>
+    </article>`;
+}
+
+function render() {
+  const q = state.q.trim().toLowerCase();
+  const list = RECIPES.filter((r) => {
+    const catOk = state.cat === "all" || r.cat === state.cat;
+    const hay = [r.name, ...r.tags, ...r.ingredients.map((i) => i[0])]
+      .join(" ")
+      .toLowerCase();
+    return catOk && (!q || hay.includes(q));
+  });
+
+  grid.innerHTML = list.map(cardHTML).join("");
+  empty.hidden = list.length > 0;
+  count.textContent = `共 ${list.length} 道`;
+}
+
+function openModal(id) {
+  const r = RECIPES.find((x) => x.id === id);
+  if (!r) return;
+  lastFocused = document.activeElement;
+
+  panel.innerHTML = `
+    <div class="panel-head">
+      <img src="${imgUrl(r.prompt)}" alt="${r.name}"
+        onerror="this.remove()">
+      <button class="close" aria-label="关闭" data-close>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <path d="M6 6l12 12M18 6 6 18"></path>
+        </svg>
+      </button>
+      <div class="panel-title">
+        <p class="kicker">${r.cat}</p>
+        <h2 id="modalTitle">${r.name}</h2>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="meta">
+        <span class="cal">热量 <b>${r.kcal} kcal</b></span>
+        <span>用时 <b>${r.time}</b></span>
+        <span>难度 <b>${r.level}</b></span>
+        ${r.tags.map((t) => `<span>${t}</span>`).join("")}
+      </div>
+      <div class="cols">
+        <section class="sec">
+          <h3>用料配比（2 人份）</h3>
+          <table class="ing">
+            <thead>
+              <tr><th>食材</th><th>用量</th><th>配比</th></tr>
+            </thead>
+            <tbody>
+              ${r.ingredients.map((i) => `
+                <tr>
+                  <td>${i[0]}</td>
+                  <td>${i[1]}</td>
+                  <td>${i[2]} 份</td>
+                </tr>`).join("")}
+            </tbody>
+          </table>
+          <div class="ratio"><b>整体比例</b>${r.ratio}</div>
+        </section>
+        <section class="sec">
+          <h3>做法步骤</h3>
+          <ol class="steps">
+            ${r.steps.map((s) => `<li>${s}</li>`).join("")}
+          </ol>
+        </section>
+      </div>
+    </div>`;
+
+  modal.classList.add("open");
+  document.body.style.overflow = "hidden";
+  panel.scrollTop = 0;
+  panel.querySelector(".close").focus();
+}
+
+function closeModal() {
+  modal.classList.remove("open");
+  document.body.style.overflow = "";
+  if (lastFocused) lastFocused.focus();
+}
+
+grid.addEventListener("click", (e) => {
+  const card = e.target.closest(".card");
+  if (card) openModal(card.dataset.id);
+});
+
+grid.addEventListener("keydown", (e) => {
+  if (e.key !== "Enter" && e.key !== " ") return;
+  const card = e.target.closest(".card");
+  if (!card) return;
+  e.preventDefault();
+  openModal(card.dataset.id);
+});
+
+filters.addEventListener("click", (e) => {
+  const btn = e.target.closest(".chip");
+  if (!btn) return;
+  state.cat = btn.dataset.cat;
+  filters.querySelectorAll(".chip").forEach((c) => c.classList.toggle("active", c === btn));
+  render();
+});
+
+searchInput.addEventListener("input", (e) => {
+  state.q = e.target.value;
+  render();
+});
+
+modal.addEventListener("click", (e) => {
+  if (e.target === modal || e.target.closest("[data-close]")) closeModal();
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && modal.classList.contains("open")) closeModal();
+});
+
+render();
+</script>
+</body>
+</html>
